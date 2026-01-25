@@ -6,12 +6,12 @@ permissions:
 on:
   push:
     tags:
-      - 'v*' 
+      - 'v*' # Triggers on tags like v1.0, v5.0.0, etc.
 
 env:
- 
+  # The name of the binary defined in your Cargo.toml
   BINARY_NAME: rust_sqli_hunter
-  PROJECT_PATH: .
+  PROJECT_PATH: .  # Corrected path for flat repository structure
 
 jobs:
   build:
@@ -75,7 +75,7 @@ jobs:
           path: ${{ matrix.platform.name }}
           retention-days: 1
 
- release:
+  release:
     name: Create GitHub Release
     needs: build
     runs-on: ubuntu-latest
