@@ -75,7 +75,7 @@ jobs:
           path: ${{ matrix.platform.name }}
           retention-days: 1
 
-  release:
+ release:
     name: Create GitHub Release
     needs: build
     runs-on: ubuntu-latest
@@ -84,6 +84,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
+          pattern: rust_sqli_hunter-*
+          merge-multiple: true
 
       - name: List Artifacts
         run: ls -R artifacts
@@ -92,7 +94,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            artifacts/**/*.tar.gz
-            artifacts/**/*.zip
+            artifacts/*.tar.gz
+            artifacts/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
