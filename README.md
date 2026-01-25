@@ -20,9 +20,9 @@
 </p>
 
 
-# RustSQLi-Phantom-Ops (SQLi Hunter)
+# SQLi Hunter
 
-**RustSQLi-Phantom-Ops** is a high-performance, asynchronous SQL Injection vulnerability scanner written in Rust. It is designed for advanced discovery, evasion, and exploitation of SQL injection flaws in modern web applications.
+This  is a high-performance, asynchronous SQL Injection vulnerability scanner written in Rust. It is designed for advanced discovery, evasion, and exploitation of SQL injection flaws in modern web applications.
 
 It features a "Hunter-Gatherer" architecture when paired with its companion tool, [Spectre](https://github.com/id-root/spectre).
 
