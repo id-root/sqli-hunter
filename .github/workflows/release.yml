@@ -9,9 +9,8 @@ on:
       - 'v*' # Triggers on tags like v1.0, v5.0.0, etc.
 
 env:
-  # The name of the binary defined in your Cargo.toml
   BINARY_NAME: rust_sqli_hunter
-  PROJECT_PATH: .  # Corrected path for flat repository structure
+  PROJECT_PATH: .
 
 jobs:
   build:
@@ -58,14 +57,16 @@ jobs:
         if: matrix.platform.os == 'ubuntu-latest'
         run: |
           cd ${{ env.PROJECT_PATH }}/target/${{ matrix.platform.target }}/release
-          tar -czf ../../../../${{ matrix.platform.name }} ${{ matrix.platform.bin }}
+          # FIX: Changed from ../../../../ to ../../../ (3 levels up)
+          tar -czf ../../../${{ matrix.platform.name }} ${{ matrix.platform.bin }}
           cd -
 
       - name: Package Binary (Windows)
         if: matrix.platform.os == 'windows-latest'
         run: |
           cd ${{ env.PROJECT_PATH }}/target/${{ matrix.platform.target }}/release
-          7z a ../../../../${{ matrix.platform.name }} ${{ matrix.platform.bin }}
+          # FIX: Changed from ../../../../ to ../../../ (3 levels up)
+          7z a ../../../${{ matrix.platform.name }} ${{ matrix.platform.bin }}
           cd -
 
       - name: Upload Artifacts
@@ -73,7 +74,7 @@ jobs:
         with:
           name: ${{ matrix.platform.name }}
           path: ${{ matrix.platform.name }}
-          retention-days: 1
+          if-no-files-found: error # This ensures it fails loudly if the file is missing
 
   release:
     name: Create GitHub Release
@@ -84,10 +85,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-          pattern: rust_sqli_hunter-*
-          merge-multiple: true
+          merge-multiple: true # Flattens files into the directory
 
-      - name: List Artifacts
+      - name: List Artifacts (Debug)
         run: ls -R artifacts
 
       - name: Create Release and Upload Assets
