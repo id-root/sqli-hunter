@@ -6,12 +6,12 @@ permissions:
 on:
   push:
     tags:
-      - 'v*' # Triggers on tags like v1.0, v5.0.0, etc.
+      - 'v*' 
 
 env:
-  # The name of the binary defined in your Cargo.toml
+ 
   BINARY_NAME: rust_sqli_hunter
-  PROJECT_PATH: ./sqli-hunter # Path to the Cargo.toml directory
+  PROJECT_PATH: .
 
 jobs:
   build:
