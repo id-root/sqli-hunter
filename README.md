@@ -95,7 +95,7 @@ To scan protected targets (Cloudflare, Datadome, etc.), you must provide a valid
 
 ```bash
 # (Run this in the Spectre directory)
-./spectre --url "https://protected-target.com"
+./spectre
 # Output saved to last_cookie.txt
 
 ```
