@@ -26,10 +26,40 @@ colored = "2.0"
 comfy-table = "7.0"
 chrono = { version = "0.4", features = ["serde"] }
 statistical = "1.0"
-tokio-stream = { version = "0.1", features = ["fs", "io-util"] }
+tokio-stream = { version = "0.1", features = ["fs", "io-util", "sync"] }
 async-stream = "0.3"
 rquest-util = "2"
 scraper = "0.18"
 url = "2.5"
 uuid = { version = "1.6", features = ["v4"] }
 async-recursion = "1.0"
+
+# ========================================
+# TITAN RELEASE DEPENDENCIES
+# ========================================
+
+# Phase 1: Deep Inspection & Logic
+html5ever = "0.26"
+markup5ever_rcdom = "0.2"
+sqlparser = "0.39"
+
+# Phase 2: Enterprise Integration
+headless_chrome = "1.0"
+serde_yaml = "0.9"
+quick-xml = { version = "0.31", features = ["serialize"] }
+
+# Phase 3: Architecture & Scale
+tonic = "0.10"
+prost = "0.12"
+redis = { version = "0.24", features = ["tokio-comp"] }
+async-trait = "0.1"
+
+# Phase 4: Reporting & Visualization
+ratatui = "0.26"
+crossterm = "0.27"
+genpdf = "0.2"
+handlebars = "5.1"
+thiserror = "1.0"
+
+[build-dependencies]
+tonic-build = "0.10"
