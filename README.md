@@ -6,10 +6,7 @@
     <img src="https://img.shields.io/badge/Suite-Orion-blue" alt="Suite: Orion">
   </a>
   <a href="#">
-    <img src="https://img.shields.io/badge/version-5.0.0-black.svg" alt="Version 5.0.0">
-  </a>
-  <a href="#">
-    <img src="https://img.shields.io/badge/Engine-Omniscient-blueviolet" alt="Engine: Omniscient">
+    <img src="https://img.shields.io/badge/release-Titan-fb8b24" alt="Release: Titan (v6.0)">
   </a>
   <a href="#">
     <img src="https://img.shields.io/badge/Architecture-Hunter--Gatherer-red" alt="Architecture: Hunter-Gatherer">
@@ -20,37 +17,35 @@
 </p>
 
 
-# SQLi Hunter
+# SQLi Hunter: Titan Edition
 
-This  is a high-performance, asynchronous SQL Injection vulnerability scanner written in Rust. It is designed for advanced discovery, evasion, and exploitation of SQL injection flaws in modern web applications.
-
-It features a "Hunter-Gatherer" architecture when paired with its companion tool, [Spectre](https://github.com/id-root/spectre).
+**RustSQLi-Hunter Titan** is an enterprise-grade, asynchronous SQL Injection vulnerability scanner. It combines high-performance concurrency with deep structural analysis and browser-based automation to detect complex vulnerabilities in modern applications.
 
 ---
 
 ## ⚠️ Disclaimer
 
 > **This tool is for educational purposes and authorized security testing only.**
-> You must have explicit permission from the owner of the target system before scanning. The authors accept no responsibility for unauthorized use or damage caused by this tool. Usage of this tool for attacking targets without prior mutual consent is illegal. It is the end user's responsibility to obey all applicable local, state, and federal laws.
+> You must have explicit permission from the owner of the target system before scanning. The authors accept no responsibility for unauthorized use or damage caused by this tool. Usage of this tool for attacking targets without prior mutual consent is illegal.
 
 ---
 
-## 🔥 Key Features
+## 🔥 Titan Release Features
 
-* **⚡ High-Performance:** Built on the `Tokio` async runtime for massive concurrency.
-* **🧠 Omniscient Detection:** Uses heuristic analysis to detect Error-Based, Boolean-Based, and Time-Based Blind injections.
-* **🛡️ WAF Evasion:** Bypass Cloudflare, Akamai, and other WAFs by integrating valid session cookies.
-* **🕸️ Built-in Spider:** Can crawl an entire domain to discover injection points automatically.
-* **📡 Out-of-Band (OOB):** Supports DNS/HTTP interaction payloads (MySQL, PostgreSQL, Oracle, MSSQL) to detect hidden vulnerabilities.
-* **💾 State Persistence:** All targets and findings are saved to a local SQLite database (`fuzzer.db`), allowing you to pause and resume scans.
+*   **🔒 Authentication Macros:** Automate complex login flows (MFA, SSO, Captcha) using headless browser scripts.
+*   **📊 TUI Dashboard:** Real-time terminal dashboard with live traffic, finding logs, and progress statistics.
+*   **🧠 Structural Analysis:** DOM-based differential analysis to detect subtle injection flaws (blind/error-based).
+*   **📡 Distributed Scanning:** Run as a gRPC daemon to offload scanning jobs or integrate with CI/CD pipelines.
+*   **🛡️ Safety Throttling:** Smart rate-limiting and payload filtering based on destructiveness levels (1-5).
+*   **📑 Professional Reporting:** Generate PDF executive reports or CI/CD-friendly SARIF/JUnit output.
 
 ---
 
 ## 🛠️ Installation
 
 ### Prerequisites
-
-* **Rust & Cargo:** [Install Rust](https://rustup.rs/)
+*   **Rust & Cargo:** [Install Rust](https://rustup.rs/)
+*   **Google Chrome / Chromium:** Required for authentication macros.
 
 ### Build from Source
 
@@ -58,77 +53,83 @@ It features a "Hunter-Gatherer" architecture when paired with its companion tool
 git clone https://github.com/id-root/sqli-hunter
 cd sqli-hunter
 cargo build --release
-
 ```
 
-The binary will be located at `./target/release/rust_sqli_hunter`.
+Binary location: `./target/release/rust_sqli_hunter`
 
 ---
 
 ## 🚀 Usage Guide
 
-### 1. Basic Scan (Single URL)
-
-Scan a specific URL with known parameters.
+### 1. Basic Scan
+Scan a single URL with specific parameters.
 
 ```bash
-# Scan a specific endpoint
 ./rust_sqli_hunter --url "http://target.com/product.php" --params '{"id":"1"}'
-
 ```
 
-### 2. Domain Discovery (Spider Mode)
-
-Crawl a domain to automatically find targets and add them to the scan queue.
-
-```bash
-# Crawl up to depth 3
-./rust_sqli_hunter --domain "http://target.com" --depth 3
-
-```
-
-### 3. WAF Bypass (The "Spectre" Workflow)
-
-To scan protected targets (Cloudflare, Datadome, etc.), you must provide a valid session cookie. We recommend using [Spectre](https://github.com/id-root/spectre) to acquire this.
-
-**Step 1: Get Cookie with Spectre**
-
-```bash
-# (Run this in the Spectre directory)
-./spectre
-# Output saved to last_cookie.txt
-
-```
-
-**Step 2: Scan with SQLi Hunter**
-Pass the cookie string using the `--cookie` flag.
+### 2. Authenticated Scan (New!)
+Use a YAML macro to handle login automatically.
 
 ```bash
 ./rust_sqli_hunter \
-  --url "https://protected-target.com/search" \
+  --url "http://internal-app.local/search" \
   --params '{"q":"test"}' \
-  --cookie "cf_clearance=x7z-bypass-token-99"
-
+  --auth-macro macros/login_flow.yml
 ```
 
-*Pro Tip: You can automate this by reading the file:* `--cookie "$(cat last_cookie.txt)"`
-
-### 4. Resuming a Scan
-
-If you stopped a scan or added targets via the Spider, use `--resume` to skip the setup and immediately start processing the queue.
-
-```bash
-./rust_sqli_hunter --resume
-
+**Example Macro (`macros/login.yml`):**
+```yaml
+name: "Admin Login"
+target_url: "http://target.com/login"
+steps:
+  - action: navigate
+    value: "http://target.com/login"
+  - action: type
+    selector: "#username"
+    value: "admin"
+  - action: type
+    selector: "#password"
+    value: "secret"
+  - action: click
+    selector: "#login-btn"
 ```
 
-### 5. Exporting Results
-
-Save all found vulnerabilities to a JSON file.
+### 3. TUI Dashboard
+Visualize the scan progress in real-time.
 
 ```bash
-./rust_sqli_hunter --resume --output results.json
+./rust_sqli_hunter --url "http://target.com" --depth 2 --dashboard
+```
 
+### 4. Safety & Stealth
+Control scan aggressiveness to avoid WAF detection or DB outages.
+
+```bash
+# Level 1 (Aggressive) to Level 5 (Stealth/Safe)
+./rust_sqli_hunter --url "..." --safety-level 5
+```
+
+### 5. Distributed Daemon Mode
+Start the scanner as a gRPC service.
+
+```bash
+# Start Server
+./rust_sqli_hunter --daemon --daemon-addr "0.0.0.0:50051"
+
+# Submit Job (using grpcurl or client)
+grpcurl -d '{"url": "..."}' -plaintext localhost:50051 sqli_hunter.ScannerService/SubmitJob
+```
+
+### 6. Reporting
+Generate artifacts for auditors or CI/CD systems.
+
+```bash
+# Professional PDF
+./rust_sqli_hunter --resume --output-pdf report.pdf
+
+# CI/CD Integration
+./rust_sqli_hunter --resume --format sarif --output results.sarif
 ```
 
 ---
@@ -138,45 +139,26 @@ Save all found vulnerabilities to a JSON file.
 | Flag | Description | Example |
 | --- | --- | --- |
 | `--url <URL>` | Target URL to scan. | `http://site.com/api` |
-| `--params <JSON>` | JSON string of parameters to fuzz. | `'{"id":"1", "q":"search"}'` |
-| `--method <GET/POST>` | HTTP Method (Default: GET). | `--method POST` |
-| `--domain <URL>` | Enable Spider mode on this domain. | `--domain http://site.com` |
-| `--depth <N>` | Recursion depth for Spider (Default: 2). | `--depth 3` |
-| `--cookie <STR>` | Manually pass WAF-bypass cookies. | `--cookie "PHPSESSID=xyz"` |
-| `--concurrency <N>` | Number of concurrent threads (Default: 5). | `--concurrency 20` |
-| `--proxy-file <FILE>` | Path to a list of proxies (one per line). | `--proxy-file proxies.txt` |
-| `--payloads <FILE>` | Path to custom payload file (SecLists). | `--payloads list.txt` |
-| `--oob <DOMAIN>` | Enable OOB detection using this interaction domain. | `--oob collaborator.com` |
-| `--resume` | Resume scan from local DB (skip target add). | `--resume` |
-| `--output <FILE>` | Save findings to a JSON file. | `--output report.json` |
-
----
-
-## 🤝 Integration with Spectre
-
-This tool is designed to work seamlessly with **Spectre**, a specialized "Gatherer" tool for bypassing advanced WAF challenges.
-
-* **Spectre** handles the browser fingerprinting and challenge solving (JS/Captcha).
-* **SQLi Hunter** uses the session established by Spectre to deliver payloads without getting blocked.
-
-**Project Link:** [github.com/id-root/spectre](https://github.com/id-root/spectre)
-
-### Recommended Workflow
-
-1. **Gather:** Run `spectre` against the target to identify WAF type and extract the session cookie.
-2. **Hunt:** Run `sqli-hunter` with the extracted cookie to fuzz the application logic.
+| `--params <JSON>` | JSON parameters to fuzz. | `'{"id":"1"}'` |
+| `--auth-macro <FILE>` | Path to auth workflow YAML. | `--auth-macro login.yml` |
+| `--dashboard` | Enable TUI dashboard. | `--dashboard` |
+| `--safety-level <1-5>` | Safety/Stealth level. | `--safety-level 5` |
+| `--format <FMT>` | Output format (json, sarif, junit). | `--format sarif` |
+| `--daemon` | Run as gRPC server. | `--daemon` |
+| `--domain <URL>` | Enable crawler. | `--domain http://site.com` |
+| `--depth <N>` | Crawl depth. | `--depth 3` |
+| `--concurrency <N>` | Thread count. | `--concurrency 10` |
 
 ---
 
 ## 🏗️ Architecture
 
-* **Context Engine:** Analyzes input (Integer vs. String vs. JSON) to tailor payloads.
-* **Heuristic Analyzer:** regex-based detection for generic and specific DB errors.
-* **Database:** Uses SQLite (`fuzzer.db`) for robust state management.
-* **Tamper Pipeline:** (Optional) Modifies payloads (e.g., `Space2Comment`) to evade filters.
+*   **Cyber-Brain (Analysis):** `html5ever` DOM diffing & `sqlparser` AST analysis.
+*   **Suit (Integration):** `headless_chrome` automation & `serde_sarif` reporting.
+*   **Muscle (Scale):** `tonic` gRPC server & `tokio` async runtime.
+*   **Face (UI):** `ratatui` dashboard & `genpdf` report engine.
 
 ---
 
 ## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License.
