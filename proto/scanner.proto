@@ -1,0 +1,242 @@
+syntax = "proto3";
+
+package sqli_hunter;
+
+// Scanner service for distributed scanning
+service ScannerService {
+    // Submit a new scan job
+    rpc SubmitJob(SubmitJobRequest) returns (SubmitJobResponse);
+    
+    // Get the status of a running job
+    rpc GetStatus(GetStatusRequest) returns (GetStatusResponse);
+    
+    // Stop a running job
+    rpc StopJob(StopJobRequest) returns (StopJobResponse);
+    
+    // Stream findings in real-time
+    rpc StreamFindings(StreamFindingsRequest) returns (stream Finding);
+    
+    // List all jobs
+    rpc ListJobs(ListJobsRequest) returns (ListJobsResponse);
+    
+    // Health check
+    rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// Job submission request
+message SubmitJobRequest {
+    // Target URL to scan
+    string url = 1;
+    
+    // HTTP method (GET, POST, etc.)
+    string method = 2;
+    
+    // JSON-encoded parameters
+    string params_json = 3;
+    
+    // Safety level (1-5)
+    int32 safety_level = 4;
+    
+    // Concurrency level
+    int32 concurrency = 5;
+    
+    // Optional proxy list (comma-separated)
+    string proxies = 6;
+    
+    // Optional tamper scripts (comma-separated)
+    string tamper_scripts = 7;
+    
+    // Job priority (higher = more urgent)
+    int32 priority = 8;
+    
+    // Optional external payload file path
+    string payload_file = 9;
+}
+
+// Job submission response
+message SubmitJobResponse {
+    // Unique job identifier
+    string job_id = 1;
+    
+    // Whether the job was accepted
+    bool accepted = 2;
+    
+    // Error message if not accepted
+    string error = 3;
+    
+    // Estimated queue position
+    int32 queue_position = 4;
+}
+
+// Status request
+message GetStatusRequest {
+    // Job ID to check
+    string job_id = 1;
+}
+
+// Status response
+message GetStatusResponse {
+    // Job ID
+    string job_id = 1;
+    
+    // Current status
+    JobStatus status = 2;
+    
+    // Progress percentage (0-100)
+    int32 progress_percent = 3;
+    
+    // Number of findings so far
+    int32 findings_count = 4;
+    
+    // Current target being scanned
+    string current_target = 5;
+    
+    // Payloads tested so far
+    int64 payloads_tested = 6;
+    
+    // Total payloads to test
+    int64 total_payloads = 7;
+    
+    // Any error message
+    string error = 8;
+    
+    // Job start time (RFC3339)
+    string started_at = 9;
+    
+    // Job end time if completed (RFC3339)
+    string completed_at = 10;
+}
+
+// Job status enum
+enum JobStatus {
+    JOB_STATUS_UNKNOWN = 0;
+    JOB_STATUS_PENDING = 1;
+    JOB_STATUS_RUNNING = 2;
+    JOB_STATUS_COMPLETED = 3;
+    JOB_STATUS_FAILED = 4;
+    JOB_STATUS_CANCELLED = 5;
+    JOB_STATUS_PAUSED = 6;
+}
+
+// Stop job request
+message StopJobRequest {
+    // Job ID to stop
+    string job_id = 1;
+    
+    // Whether to force stop immediately
+    bool force = 2;
+}
+
+// Stop job response
+message StopJobResponse {
+    // Whether the stop was successful
+    bool success = 1;
+    
+    // Final status of the job
+    JobStatus final_status = 2;
+    
+    // Error message if failed
+    string error = 3;
+}
+
+// Stream findings request
+message StreamFindingsRequest {
+    // Job ID to stream from
+    string job_id = 1;
+    
+    // Start from this finding index (0 = beginning)
+    int32 from_index = 2;
+}
+
+// A single vulnerability finding
+message Finding {
+    // Finding ID
+    int64 id = 1;
+    
+    // Target ID
+    int64 target_id = 2;
+    
+    // Target URL
+    string target_url = 3;
+    
+    // Vulnerable parameter name
+    string vulnerable_param = 4;
+    
+    // Payload that triggered the vulnerability
+    string payload_used = 5;
+    
+    // Evidence of vulnerability
+    string evidence = 6;
+    
+    // Confidence score (0-100)
+    int32 confidence_score = 7;
+    
+    // WAF bypass method used (if any)
+    string waf_bypass_method = 8;
+    
+    // When the finding was detected (RFC3339)
+    string timestamp = 9;
+}
+
+// List jobs request
+message ListJobsRequest {
+    // Filter by status (optional)
+    JobStatus status_filter = 1;
+    
+    // Maximum number of jobs to return
+    int32 limit = 2;
+    
+    // Offset for pagination
+    int32 offset = 3;
+}
+
+// List jobs response
+message ListJobsResponse {
+    // List of job summaries
+    repeated JobSummary jobs = 1;
+    
+    // Total count (for pagination)
+    int32 total_count = 2;
+}
+
+// Summary of a job
+message JobSummary {
+    // Job ID
+    string job_id = 1;
+    
+    // Target URL
+    string target_url = 2;
+    
+    // Current status
+    JobStatus status = 3;
+    
+    // Progress percentage
+    int32 progress_percent = 4;
+    
+    // Number of findings
+    int32 findings_count = 5;
+    
+    // Created timestamp
+    string created_at = 6;
+}
+
+// Health check request
+message HealthCheckRequest {}
+
+// Health check response
+message HealthCheckResponse {
+    // Whether the service is healthy
+    bool healthy = 1;
+    
+    // Service version
+    string version = 2;
+    
+    // Number of active jobs
+    int32 active_jobs = 3;
+    
+    // Queue size
+    int32 queue_size = 4;
+    
+    // Uptime in seconds
+    int64 uptime_seconds = 5;
+}
