@@ -6,7 +6,7 @@
     <img src="https://img.shields.io/badge/Suite-Orion-blue" alt="Suite: Orion">
   </a>
   <a href="#">
-    <img src="https://img.shields.io/badge/release-Titan-fb8b24" alt="Release: Titan (v6.0)">
+    <img src="https://img.shields.io/badge/release-Titan v6.0-fb8b24" alt="Release: Titan (v6.0)">
   </a>
   <a href="#">
     <img src="https://img.shields.io/badge/Architecture-Hunter--Gatherer-red" alt="Architecture: Hunter-Gatherer">
