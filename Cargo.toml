@@ -3,6 +3,10 @@ name = "rust_sqli_hunter"
 version = "4.0.0"
 edition = "2021"
 
+[features]
+default = []
+grpc = []
+
 [dependencies]
 sha2 = "0.10"
 hex = "0.4"
