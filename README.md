@@ -19,7 +19,7 @@
 
 # SQLi Hunter: Titan Edition
 
-**RustSQLi-Hunter Titan** is an enterprise-grade, asynchronous SQL Injection vulnerability scanner. It combines high-performance concurrency with deep structural analysis and browser-based automation to detect complex vulnerabilities in modern applications.
+**RustSQLi-Hunter Titan** is an asynchronous SQL Injection vulnerability scanner. It combines high-performance concurrency with deep structural analysis and browser-based automation to detect complex vulnerabilities in modern applications.
 
 ---
 
