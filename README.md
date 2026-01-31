@@ -17,9 +17,9 @@
 </p>
 
 
-# SQLi Hunter: Titan Edition
+# SQLi Hunter:
 
-**RustSQLi-Hunter Titan** is an asynchronous SQL Injection vulnerability scanner. It combines high-performance concurrency with deep structural analysis and browser-based automation to detect complex vulnerabilities in modern applications.
+**RustSQLi-Hunter** is an asynchronous SQL Injection vulnerability scanner. It combines high-performance concurrency with deep structural analysis and browser-based automation to detect complex vulnerabilities in modern applications.
 
 ---
 
@@ -33,7 +33,6 @@
 ## 🔥 Titan Release Features
 
 *   **🔒 Authentication Macros:** Automate complex login flows (MFA, SSO, Captcha) using headless browser scripts.
-*   **📊 TUI Dashboard:** Real-time terminal dashboard with live traffic, finding logs, and progress statistics.
 *   **🧠 Structural Analysis:** DOM-based differential analysis to detect subtle injection flaws (blind/error-based).
 *   **📡 Distributed Scanning:** Run as a gRPC daemon to offload scanning jobs or integrate with CI/CD pipelines.
 *   **🛡️ Safety Throttling:** Smart rate-limiting and payload filtering based on destructiveness levels (1-5).
@@ -95,14 +94,8 @@ steps:
     selector: "#login-btn"
 ```
 
-### 3. TUI Dashboard
-Visualize the scan progress in real-time.
 
-```bash
-./rust_sqli_hunter --url "http://target.com" --depth 2 --dashboard
-```
-
-### 4. Safety & Stealth
+### 3. Safety & Stealth
 Control scan aggressiveness to avoid WAF detection or DB outages.
 
 ```bash
@@ -110,7 +103,7 @@ Control scan aggressiveness to avoid WAF detection or DB outages.
 ./rust_sqli_hunter --url "..." --safety-level 5
 ```
 
-### 5. Distributed Daemon Mode
+### 4. Distributed Daemon Mode
 Start the scanner as a gRPC service.
 
 ```bash
@@ -121,7 +114,7 @@ Start the scanner as a gRPC service.
 grpcurl -d '{"url": "..."}' -plaintext localhost:50051 sqli_hunter.ScannerService/SubmitJob
 ```
 
-### 6. Reporting
+### 5. Reporting
 Generate artifacts for auditors or CI/CD systems.
 
 ```bash
